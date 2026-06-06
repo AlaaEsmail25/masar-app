@@ -35,9 +35,28 @@ def inject_styles():
     #MainMenu, header, footer, .stDeployButton { visibility: hidden !important; }
     .viewerBadge_container__1QSob { display: none !important; }
 
+    /* ── FIX 1: إخفاء الشريط الجانبي تماماً ── */
+    [data-testid="collapsedControl"] { display: none !important; }
+    [data-testid="stSidebarCollapsedControl"] { display: none !important; }
+    section[data-testid="stSidebar"] {
+        transform: translateX(100%) !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        min-width: 0 !important;
+    }
+    section[data-testid="stSidebar"][aria-expanded="true"] {
+        transform: translateX(0) !important;
+        visibility: visible !important;
+        width: 280px !important;
+    }
+    /* إخفاء الشريط الرفيع تماماً */
+    .css-1lcbmhc, .css-hxt7ib, [data-testid="stSidebarNav"],
+    div[class*="sidebar-content"],
+    div.css-1d391kg { display: none !important; }
+
     .block-container {
-        max-width: 440px !important;
-        padding: 0 12px 120px 12px !important;
+        max-width: 460px !important;
+        padding: 0 12px 140px 12px !important;
         margin: 0 auto !important;
     }
 
@@ -150,15 +169,68 @@ def inject_styles():
         margin: 18px 0 10px; padding-right: 4px;
     }
 
-    /* ── Add page tabs ──────────────────────────── */
-    .add-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-    .add-tab {
-        flex: 1; min-width: 80px; padding: 8px 6px;
-        border-radius: 12px; text-align: center;
-        font-size: 0.82rem; font-weight: 700; cursor: pointer;
-        background: #f4f7fc; color: var(--muted); border: none;
+    /* ── FIX 3 & 4: بطاقات التبويب الاحترافية ─── */
+    .add-tabs-header {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
     }
-    .add-tab.active { background: var(--primary-light); color: var(--primary); }
+    .add-tab-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 16px 12px;
+        text-align: center;
+        cursor: pointer;
+        border: 2.5px solid transparent;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: block;
+    }
+    .add-tab-card.active {
+        border-color: var(--primary);
+        background: var(--primary-light);
+        box-shadow: 0 6px 20px rgba(11,122,127,0.18);
+        transform: translateY(-2px);
+    }
+    .add-tab-card:hover:not(.active) {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+    }
+    .add-tab-icon {
+        font-size: 1.8rem;
+        margin-bottom: 6px;
+        display: block;
+    }
+    .add-tab-label {
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: var(--text);
+        font-family: 'Cairo', sans-serif;
+    }
+    .add-tab-card.active .add-tab-label { color: var(--primary); }
+
+    /* ── FAB زر الإضافة ──────────────────────── */
+    .fab-btn {
+        position: fixed;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 64px; height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary) 0%, #0a9ea6 100%);
+        color: #fff;
+        font-size: 2rem;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 8px 28px rgba(11,122,127,0.38);
+        cursor: pointer;
+        z-index: 9998;
+        border: none;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .fab-btn:hover { transform: translateX(-50%) scale(1.1); }
 
     /* ── Form card ──────────────────────────────── */
     .form-card {
@@ -199,29 +271,61 @@ def inject_styles():
     .ai-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
     .ai-sub { font-size: 0.88rem; opacity: 0.85; }
 
-    /* ── Bottom nav ─────────────────────────────── */
+    /* ── FIX 2: Bottom Nav — نصوص عربية كاملة ─── */
     .bottom-nav {
-        position: fixed; bottom: 14px; left: 50%;
-        transform: translateX(-50%);
-        width: min(420px, calc(100vw - 20px));
-        background: rgba(255,255,255,0.97);
-        backdrop-filter: blur(16px);
-        border-radius: 26px;
-        padding: 8px 6px;
-        box-shadow: 0 16px 40px rgba(23,40,70,0.16);
-        display: grid; grid-template-columns: repeat(5, 1fr);
-        gap: 2px; z-index: 9999;
+        position: fixed; bottom: 0; left: 0; right: 0;
+        background: rgba(255,255,255,0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid #e8edf3;
+        padding: 8px 4px 12px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0;
+        z-index: 9999;
+        box-shadow: 0 -4px 24px rgba(20,42,74,0.08);
     }
     .nav-btn {
-        text-align: center; padding: 9px 4px;
-        border-radius: 18px; cursor: pointer;
-        color: var(--faint); text-decoration: none;
-        display: block; transition: all .18s ease;
+        text-align: center;
+        padding: 6px 2px 4px;
+        border-radius: 14px;
+        cursor: pointer;
+        color: var(--faint);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all .18s ease;
+        min-width: 0;
     }
-    .nav-btn.active { color: var(--primary); background: var(--primary-light); }
-    .nav-btn:hover:not(.active) { background: #f4f7fc; color: var(--muted); }
-    .nav-icon { font-size: 1.35rem; display: block; margin-bottom: 2px; line-height: 1.2; }
-    .nav-label { font-size: 0.73rem; font-weight: 700; }
+    .nav-btn.active {
+        color: var(--primary);
+    }
+    .nav-btn.active .nav-icon-wrap {
+        background: var(--primary-light);
+        border-radius: 14px;
+    }
+    .nav-icon-wrap {
+        width: 44px; height: 34px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 14px;
+        transition: all .18s ease;
+        margin-bottom: 2px;
+    }
+    .nav-icon { font-size: 1.3rem; line-height: 1; }
+    /* FIX 2: حجم النص في Nav أكبر + لا قطع */
+    .nav-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        font-family: 'Cairo', sans-serif !important;
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.2;
+        max-width: 60px;
+        display: block;
+    }
 
     /* ── Streamlit overrides ────────────────────── */
     .stButton > button {
@@ -235,7 +339,7 @@ def inject_styles():
     }
     .stButton > button:hover { background: var(--primary-hover) !important; transform: translateY(-1px); }
 
-    .stTextInput input, .stNumberInput input, .stDateInput input, .stSelectbox select {
+    .stTextInput input, .stNumberInput input, .stDateInput input {
         direction: rtl !important; border-radius: 12px !important;
         font-family: 'Cairo', sans-serif !important;
         border: 1px solid #dde3ec !important;
@@ -253,10 +357,9 @@ def inject_styles():
     }
 
     .stAlert { border-radius: 14px !important; font-family: 'Cairo', sans-serif !important; }
-    .stMetric { font-family: 'Cairo', sans-serif !important; }
     label { font-family: 'Cairo', sans-serif !important; direction: rtl !important; }
 
-    /* notification alert */
+    /* ── Notification alerts ────────────────────── */
     .notif-alert {
         border-radius: 14px; padding: 12px 16px;
         margin-bottom: 10px; font-size: 0.92rem; font-weight: 700;
@@ -264,5 +367,9 @@ def inject_styles():
     .notif-red    { background: #fff0f0; color: #c0392b; border-right: 4px solid #e74c3c; }
     .notif-yellow { background: #fff8e1; color: #b7770d; border-right: 4px solid #f0a500; }
     .notif-green  { background: #e8fff3; color: #1a7a46; border-right: 4px solid #27a765; }
+
+    /* hide streamlit radio default styling for add page */
+    div[data-testid="stRadio"] { display: none !important; }
+
     </style>
     """, unsafe_allow_html=True)
